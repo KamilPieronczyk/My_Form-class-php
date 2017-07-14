@@ -1,5 +1,10 @@
 # My_Form-class-php
-Add main files
+
+# Readme
+To create new form create new object using class My_Form.
+To add new fields to this form use add_field funcion.
+To print your form use form_input function. You could also create your own fields and put them in function and give function name as argument to form_input. If you do that, you have to create your update function to these fields and give function name as argument in register_update function. To prints you data you could use get_value(option name) in a while(have_values()) loop. To create edit form you should use My_Form_Edit class and you don't have to create again same fields like in My_Form, they'll be downloaded automaticaly.
+
 
 ===============================================
         Functions
