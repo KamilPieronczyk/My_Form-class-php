@@ -2,13 +2,13 @@
 session_start();
 //function connection() {
     // serwer
-    $mysql_server = "p23a.progreso.pl";
+    $mysql_server = "localhost";
     // admin
-    $mysql_admin = "pphumako_new";
+    $mysql_admin = "root";
     // hasło
-    $mysql_pass = "mako100";
+    $mysql_pass = "";
     // nazwa baza
-    $mysql_db = "pphumako_new";
+    $mysql_db = "forms";
     // nawiązujemy połączenie z serwerem MySQL
     $polanczenie=@new mysqli($mysql_server, $mysql_admin, $mysql_pass,$mysql_db);
     //or die('Brak połączenia z serwerem MySQL.');
