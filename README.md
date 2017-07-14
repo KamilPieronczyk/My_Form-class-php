@@ -53,30 +53,30 @@ add_field()
   - attr
 
 form_input()
- *array (everything is optional)
-  - before_form default(<div>)
-  - after_form default(</div>)
-  - before_title default(<h2>)
-  - after_title default(</h2>)
- *function callback
+* array (everything is optional)
+  - before_form default(div)
+  - after_form default(/div)
+  - before_title default(h2)
+  - after_title default(/h2)
+* function callback
   - for example:
-    function example(){
+    function example()    
     echo '<input type=text value=hello world>';
-    }
+    
 
 register_update()
- *function callback - update for yourself inputs created in callback for form_input();
+ * function callback - update for yourself inputs created in callback for form_input();
 
 have_values()
-  - returns true or false when you have datas for writing or you haven't
-  - for example: while(have_values()) : get_option('title');
+ * returns true or false when you have datas for writing or you haven't
+ * for example: while(have_values()) : get_option('title');
 
 get_value()
-  *option name
-  (working with have_values in while loop or without)
+ * option name
+ * (working with have_values in while loop or without)
 
 get_form_id()
-  return form id in while loop with have_values() or without it
+ * return form id in while loop with have_values() or without it
 
 ====================================================
  class - My_Form_Edit
