@@ -6,9 +6,9 @@ To add new fields to this form use add_field funcion.
 To print your form use form_input function. You could also create your own fields and put them in function and give function name as argument to form_input. If you do that, you have to create your update function to these fields and give function name as argument in register_update function. To prints you data you could use get_value(option name) in a while(have_values()) loop. To create edit form you should use My_Form_Edit class and you don't have to create again same fields like in My_Form, they'll be downloaded automaticaly.
 
 
-===============================================
-        Functions
-===============================================
+
+# Functions
+
 
 add_option()
  * option name
@@ -35,9 +35,9 @@ unset_options()
 get_form_field()
  * form id
 
-====================================================
-    class - My_Form
-====================================================
+
+# class - My_Form
+
 
 Construct
  * id form (without '-')
@@ -67,7 +67,7 @@ form_input()
   - for example:
     function example()    
     echo '<input type=text value=hello world>';
-    
+
 
 register_update()
  * function callback - update for yourself inputs created in callback for form_input();
@@ -83,9 +83,9 @@ get_value()
 get_form_id()
  * return form id in while loop with have_values() or without it
 
-====================================================
- class - My_Form_Edit
-====================================================
+
+# class - My_Form_Edit
+
 
 Construct
  * id form (without '-')
