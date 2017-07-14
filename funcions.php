@@ -1,4 +1,23 @@
 <?php
+function create_options_table()
+{
+  $sql = "CREATE TABLE options (
+    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    option_name TEXT,
+    value TEXT,
+    form_id TEXT
+  )";
+  if ($result = connection()->query("SHOW TABLES LIKE 'options'")) {
+    if ($result->num_rows == 1) {
+      return 1;
+    }
+  } else {
+    if(connection()->query($sql) === TRUE) return 1;
+    else return 0;
+  }
+}
+create_options_table();
+
 function add_option($option_name, $value, $form_id='')
 {
   if ($form_id=='') {
