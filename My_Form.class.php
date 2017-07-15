@@ -148,7 +148,7 @@ class My_Form
     }
     if ( ! isset($attr['attr'])) {
       $attr['attr'] = '';
-    }
+    }    
     if (get_class($this) == 'My_Form') {
       $sett = array(
         'label' => @$attr['label'],

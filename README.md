@@ -57,6 +57,15 @@ add_field()
   - placeholder
   - attr
 
+add_text_editor()
+* name
+* array (everything is optional)
+  - label
+  - description
+  - class
+  - priority
+  - attr
+
 form_input()
 * array (everything is optional)
   - before_form default(div)
