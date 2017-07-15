@@ -10,7 +10,11 @@ $form->add_field('title',array(
   'priority' => 1,
   'label' => 'Tytuł',
 ));
-
+$form->add_text_editor('text',array(
+  'priority' => 2,
+  'label' => 'Text',
+  'attr' => 'style="width: 500px"'
+));
 
 $form->form_input();
 while ($form->have_values()) {

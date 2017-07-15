@@ -146,6 +146,9 @@ class My_Form
     } else {
       $this->priority[$name]=0;
     }
+    if ( ! isset($attr['attr'])) {
+      $attr['attr'] = '';
+    }
     if (get_class($this) == 'My_Form') {
       $sett = array(
         'label' => @$attr['label'],
@@ -154,7 +157,7 @@ class My_Form
         'class' => @$attr['class'],
         'priority' => $this->priority[$name],
         'placeholder' => '',
-        'attr' => ''
+        'attr' => $attr['attr']
       );
       $this->add_field_db($name,$sett);
     }
@@ -164,8 +167,10 @@ class My_Form
     if (isset($attr['description'])) {
       $this->inputs[$name] .= '<span class="description">'.$attr['description'].'</spna>';
     }
+    $this->inputs[$name] .= "<div ".$attr['attr'].">";
     $this->inputs[$name] .= "<textarea name=\"$name\">".$attr['input_text']."</textarea>
                             <script>CKEDITOR.replace( '$name' )</script>";
+    $this->inputs[$name] .= '</div>';
     $this->inputs[$name] .= '</label>';
   }
 
@@ -332,7 +337,9 @@ class My_Form
     $sql = "SELECT * FROM fields WHERE name = '$name' AND form_id = '$formid'";
     $result = connection()->query($sql);
     if ($result->num_rows > 0) {
-      return 0;
+      $sql = "UPDATE fields SET type = '$attr[type]', placeholder = '$attr[placeholder]', class = '$attr[class]', description = '$attr[description]', priority = '$attr[priority]', label = '$attr[label]', attrs = '$attr[attr]' WHERE name = '$name' AND form_id = '$formid'";
+      connection()->query($sql);
+      return 1;
     }
     $sql = "INSERT INTO fields VALUES (NULL, '$formid', '$name', '$attr[type]', '$attr[placeholder]', '$attr[class]', '$attr[attr]', '$attr[description]', '$attr[priority]', '$attr[label]')";
     if (connection()->query($sql) === TRUE) {
@@ -374,7 +381,8 @@ class My_Form
            'label' => $row['label'],
            'description' => $row['description'],
            'class' => $row['class'],
-           'priority' => $row['priority']
+           'priority' => $row['priority'],
+           'attr' => $row['attrs']
            ));
            break;
 
