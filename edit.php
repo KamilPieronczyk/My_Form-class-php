@@ -5,7 +5,7 @@ spl_autoload_register(function ($class_name) {
 require_once 'connect.php';
 require_once 'funcions.php';
 
-$form_2 = new My_Form_Edit('first-8','EDIT');
+$form_2 = new My_Form_Edit('first-10','EDIT');
 $form_2->add_field('delete',array(
   'type' => 'submit',
   'input_text' => 'Delete',
@@ -13,7 +13,7 @@ $form_2->add_field('delete',array(
   'priority' => 10
 ));
 function callback()
-{  
+{
   if ($_POST['delete'] == "Delete") {
     unset_options('first-8');
   }

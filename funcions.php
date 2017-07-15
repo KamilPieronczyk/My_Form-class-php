@@ -86,7 +86,7 @@ function unset_option($option_name,$form_id='')
   } else {
     $form_id = explode('-',$form_id);
     $form_id = $form_id[0];
-    $sql = "DELETE FROM options WHERE form_id = '%$form_id%' AND option_name = '$option_name'";
+    $sql = "DELETE FROM options WHERE form_id LIKE '%$form_id%' AND option_name = '$option_name'";
   }
   if (connection()->query($sql) === TRUE) {
     return 1;
@@ -109,11 +109,14 @@ function unset_options($form_id)
 
 function get_form_field($form_id)
 {
-  $sql = "SELECT * FROM options WHERE form_id = '$form_id'";
+  $form_id = explode('-',$form_id);
+  $form_id = $form_id[0];
+
+  $sql = "SELECT * FROM fields WHERE form_id = '$form_id'";
   $result = connection()->query($sql);
     if ($result->num_rows>0) {
       while ($row = $result->fetch_assoc()) {
-        $fields[] = $row['option_name'];
+        $fields[] = $row['name'];
       }
       if (count($fields)>0) {
         return $fields;

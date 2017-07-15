@@ -11,7 +11,8 @@ class My_Form_Edit extends My_Form
     }
     $this->form_id=$id;
     $this->multiple = false;
-    $this->title = $title_;    
+    $this->title = $title_;
     $this->get_form_fields();
+    echo '<script src="https://cdn.ckeditor.com/4.7.1/standard/ckeditor.js"></script>';
   }
 }

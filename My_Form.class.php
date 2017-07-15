@@ -49,6 +49,7 @@ class My_Form
     if (isset($_SESSION['field_names'])) {
       $this->update();
     }
+    echo '<script src="https://cdn.ckeditor.com/4.7.1/standard/ckeditor.js"></script>';
   }
 
   public function add_field($name,$attr = array())
@@ -127,6 +128,45 @@ class My_Form
         break;
      }
      $this->inputs[$name] .= '</label>';
+  }
+
+  public function add_text_editor($name,$attr = array()){
+    if ($name == '') {
+      return ;
+    }
+    $_SESSION['field_names'][$this->field_names_id++] = $name;
+    $_SESSION[$name] = 'text_editor';
+    if ($this->multiple == false) {
+      $attr['input_text'] = get_option($name,$this->form_id);
+    } else {
+      $attr['input_text'] = '';
+    }
+    if (isset($attr['priority'])) {
+      $this->priority[$name]=$attr['priority'];
+    } else {
+      $this->priority[$name]=0;
+    }
+    if (get_class($this) == 'My_Form') {
+      $sett = array(
+        'label' => @$attr['label'],
+        'type' => 'text_editor',
+        'description' => @$attr['description'],
+        'class' => @$attr['class'],
+        'priority' => $this->priority[$name],
+        'placeholder' => '',
+        'attr' => ''
+      );
+      $this->add_field_db($name,$sett);
+    }
+    if (isset($attr['label'])) {
+      $this->inputs[$name] = '<label>'.$attr['label'];
+    }
+    if (isset($attr['description'])) {
+      $this->inputs[$name] .= '<span class="description">'.$attr['description'].'</spna>';
+    }
+    $this->inputs[$name] .= "<textarea name=\"$name\">".$attr['input_text']."</textarea>
+                            <script>CKEDITOR.replace( '$name' )</script>";
+    $this->inputs[$name] .= '</label>';
   }
 
   public function form_input($args = array('before_form' => '<div>', 'before_title' => '<h2>', 'after_title' => '</h2>', 'after_form' => '</div>'),$callback = '')
@@ -210,8 +250,6 @@ class My_Form
           if (!$this->unset_field_db($value)) {
             echo "Error during cleaning a database";
           }
-        } else {
-          $clean=0;
         }
       }
     }
@@ -330,15 +368,28 @@ class My_Form
     $result = connection()->query($sql);
     if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
-        $this->add_field($row['name'],array(
-          'label' => $row['label'],
-          'description' => $row['description'],
-          'type' => $row['type'],
-          'placeholder' => $row['placeholder'],
-          'class' => $row['class'],
-          'attr' => $row['attrs'],
-          'priority' => $row['priority']
-        ));
+        switch ($row['type']) {
+          case 'text_editor':
+           $this->add_text_editor($row['name'],array(
+           'label' => $row['label'],
+           'description' => $row['description'],
+           'class' => $row['class'],
+           'priority' => $row['priority']
+           ));
+           break;
+
+          default:
+           $this->add_field($row['name'],array(
+            'label' => $row['label'],
+            'description' => $row['description'],
+            'type' => $row['type'],
+            'placeholder' => $row['placeholder'],
+            'class' => $row['class'],
+            'attr' => $row['attrs'],
+            'priority' => $row['priority']
+           ));
+           break;
+        }
       }
       return 1;
     } else {

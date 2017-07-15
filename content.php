@@ -11,6 +11,7 @@ $form->add_field('title',array(
   'label' => 'Tytuł',
 ));
 
+
 $form->form_input();
 while ($form->have_values()) {
   echo $form->get_value('title');
