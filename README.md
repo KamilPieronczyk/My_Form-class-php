@@ -83,7 +83,13 @@ register_update()
 
 have_values()
  * returns true or false when you have datas for writing or you haven't
- * for example: while(have_values()) : get_option('title');
+ * for example: 
+ ```php
+  while(have_values())
+  {
+    get_option('title');
+  }
+ ``` 
 
 get_value()
  * option name
