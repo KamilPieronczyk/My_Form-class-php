@@ -74,9 +74,12 @@ form_input()
   - after_title default(/h2)
 * function callback
   - for example:
-    function example()    
-    echo '<input type=text value=hello world>';
-
+  ```php
+    function example()
+    {    
+    echo '<input type=text name="title" value=hello world>';
+    }
+  ```
 
 register_update()
  * function callback - update for yourself inputs created in callback for form_input();
