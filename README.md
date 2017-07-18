@@ -88,9 +88,9 @@ have_values()
  * returns true or false when you have datas for writing or you haven't
  * for example: 
  ```php
-  while(have_values())
+  while($object->have_values())
   {
-    get_option('title');
+    $object->get_value('title');
   }
  ``` 
 
