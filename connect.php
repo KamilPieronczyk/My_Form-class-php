@@ -19,7 +19,7 @@ session_start();
   {
   echo "Połączenie z MySQL nieudane: " . mysqli_connect_error();
   };
-  function connection() {
+  function conn() {
   // serwer
   $mysql_server = "localhost";
   // admin

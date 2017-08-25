@@ -34,7 +34,7 @@ class My_Form
       while (1) {
         $this->number += 1;
         $sql="SELECT * FROM options WHERE form_id = '$id-$this->number'";
-        $result = connection()->query($sql);
+        $result = conn()->query($sql);
         if ($result->num_rows == 0){
            break;
         } else {
@@ -89,6 +89,12 @@ class My_Form
     if ( ! isset($attr['label'])) {
       $attr['label'] = '';
     }
+    if ( ! isset($attr['label_size'])) {
+      $attr['label_size'] = '';
+    }
+    if ( ! isset($attr['input_size'])) {
+      $attr['input_size'] = '';
+    }
     if (isset($attr['description'])) {
       $description = $attr['description'];
     } else {
@@ -106,28 +112,42 @@ class My_Form
       );
       $this->add_field_db($name,$sett);
     }
-     $this->inputs[$name] = '<label>'.$attr['label'];
-     if (isset($attr['description'])) {
-       $this->inputs[$name] .= '<span class="description">'.$attr['description'].'</spna>';
-     }
      switch ($attr['type']) {
        case 'radio':
+        $this->inputs[$name] = '';
          foreach ($attr['choices'] as $key => $value) {
-           $this->inputs[$name] .= "<input type=".$attr['type']." name=".$name." $class value=".$key." $attrs>".$value."<br>";
+           $this->inputs[$name] .= '<label class="custom-control custom-radio">';
+           $this->inputs[$name] .= "<input type=".$attr['type']." name=".$name." class=\"custom-control-input $class\" value=".$key." $attrs><br>";
+           $this->inputs[$name] .= '<span class="custom-control-indicator"></span>';
+           $this->inputs[$name] .= '<span class="custom-control-description">'. $value .'</span>';
+           $this->inputs[$name] .= '</label>';
          }
         break;
        case 'textarea':
-        $this->inputs[$name] .= "<textarea name=\"$name\" $class $attrs>$attr[input_text]</textarea>";
+        $this->inputs[$name] = "<textarea name=\"$name\" $class $attrs>$attr[input_text]</textarea>";
         break;
        case 'checkbox':
         $checked = (get_option($name,$this->form_id)) ? 'checked' : '' ;
-        $this->inputs[$name] .= "<input type=".$attr['type']." name=".$name." class=$class $attrs $checked>";
+        $this->inputs[$name] = '<label class="custom-control custom-checkbox">';
+        $this->inputs[$name] .= "<input type=".$attr['type']." name=".$name." class=\"$class custom-control-input\" $attrs $checked>";
+        $this->inputs[$name] .= '<span class="custom-control-indicator"></span>';
+        $this->inputs[$name] .= '<span class="custom-control-description">'. $attr['label'] .'</span>';
+        $this->inputs[$name] .= '</label>';
         break;
        default:
-        $this->inputs[$name] .= "<input type=".$attr['type']." name=".$name." class=\"$class\" placeholder=\"$placeholder\" $attrs value=\"$attr[input_text]\">";
+         $this->inputs[$name] = '<label class="'. $attr['label_size'] .' col-form-label">'.$attr['label'].'</label>';
+         if (isset($attr['description'])) {
+           $this->inputs[$name] .= '<span class="description">'.$attr['description'].'</span>';
+         }
+         if ($attr['input_size'] != '') {
+           $this->inputs[$name] .= '<div class="'. $attr['input_size'] .'">';
+           $this->inputs[$name] .= "<input type=".$attr['type']." name=".$name." class=\"form-control $class\" placeholder=\"$placeholder\" $attrs value=\"$attr[input_text]\">";
+           $this->inputs[$name] .= '</div>';
+         } else {
+           $this->inputs[$name] .= "<input type=".$attr['type']." name=".$name." class=\"form-control $class\" placeholder=\"$placeholder\" $attrs value=\"$attr[input_text]\">";
+         }
         break;
      }
-     $this->inputs[$name] .= '</label>';
   }
 
   public function add_text_editor($name,$attr = array()){
@@ -148,7 +168,7 @@ class My_Form
     }
     if ( ! isset($attr['attr'])) {
       $attr['attr'] = '';
-    }    
+    }
     if (get_class($this) == 'My_Form') {
       $sett = array(
         'label' => @$attr['label'],
@@ -183,18 +203,22 @@ class My_Form
     array_multisort($this->priority,$this->inputs);
 
     echo $args['before_form'];
+    echo '<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">';
+    echo '<div class="container">';
     echo "<form method=\"POST\">";
     echo $args['before_title'].$this->title.$args['after_title'];
 
     foreach ($this->inputs as $value) {
+      echo '<div class="form-group row">';
       echo $value;
-      echo '<br>';
+      echo '</div>';
     }
     if ($callback != '') {
       call_user_func($callback);
     }
     echo "<input type=\"submit\" name=\"submit\" value=\"Save\" class=\"btn btn-primary\">";
     echo "</form>";
+    echo "</div>";
     echo $args['after_form'];
   }
 
@@ -270,7 +294,7 @@ class My_Form
         $id=$form_id_exploded[0];
         $sql = "SELECT * FROM options WHERE form_id LIKE '%$id%'";
       }
-      $this->all_settings = connection()->query($sql);
+      $this->all_settings = conn()->query($sql);
       if ($this->all_settings->num_rows == 0) {
         return 0;
       }
@@ -335,14 +359,14 @@ class My_Form
     $formid = $formid[0];
 
     $sql = "SELECT * FROM fields WHERE name = '$name' AND form_id = '$formid'";
-    $result = connection()->query($sql);
+    $result = conn()->query($sql);
     if ($result->num_rows > 0) {
       $sql = "UPDATE fields SET type = '$attr[type]', placeholder = '$attr[placeholder]', class = '$attr[class]', description = '$attr[description]', priority = '$attr[priority]', label = '$attr[label]', attrs = '$attr[attr]' WHERE name = '$name' AND form_id = '$formid'";
-      connection()->query($sql);
+      conn()->query($sql);
       return 1;
     }
     $sql = "INSERT INTO fields VALUES (NULL, '$formid', '$name', '$attr[type]', '$attr[placeholder]', '$attr[class]', '$attr[attr]', '$attr[description]', '$attr[priority]', '$attr[label]')";
-    if (connection()->query($sql) === TRUE) {
+    if (conn()->query($sql) === TRUE) {
       return 1;
     } else {
       return 'ERROR';
@@ -354,12 +378,12 @@ class My_Form
     $formid = explode('-',$this->form_id);
     $formid = $formid[0];
     $sql = "SELECT * FROM fields WHERE name = '$name' AND form_id = '$formid'";
-    $result = connection()->query($sql);
+    $result = conn()->query($sql);
     if ($result->num_rows == 0) {
       return 0;
     }
     $sql = "DELETE FROM fields WHERE name = '$name' AND form_id = '$formid'";
-    if (connection()->query($sql) === TRUE) {
+    if (conn()->query($sql) === TRUE) {
       return 1;
     } else {
       return 0;
@@ -372,7 +396,7 @@ class My_Form
     $formid = $formid[0];
 
     $sql = "SELECT * FROM fields WHERE form_id = '$formid'";
-    $result = connection()->query($sql);
+    $result = conn()->query($sql);
     if ($result->num_rows > 0) {
       while ($row = $result->fetch_assoc()) {
         switch ($row['type']) {

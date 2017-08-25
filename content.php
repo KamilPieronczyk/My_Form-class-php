@@ -9,6 +9,24 @@ $form = new My_Form ('first','Formularz',true);
 $form->add_field('title',array(
   'priority' => 1,
   'label' => 'Tytuł',
+  'label_size' => 'col-md-2',
+  'input_size' => 'col-md-6'
+));
+$form->add_field('is_it',array(
+  'type' => 'checkbox',
+  'priority' => 3,
+  'label' => 'Click?',
+  'label_size' => 'col-md-2',
+  'input_size' => 'col-md-10'
+));
+$form->add_field('sex',array(
+  'type' => 'radio',
+  'priority' => 4,
+  'choices' => array(
+              'male' => 'Mężczyzna',
+              'female' => 'Kobieta',
+
+  )
 ));
 $form->add_text_editor('text',array(
   'priority' => 2,
