@@ -1,20 +1,15 @@
 <?php
 function create_options_table()
 {
-  $sql = "CREATE TABLE options (
-    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    option_name TEXT,
-    value TEXT,
-    form_id TEXT
+  $sql = "CREATE TABLE IF NOT EXISTS `options`(
+    `id` INT(6) UNSIGNED AUTO_INCREMENT,
+    `option_name` TEXT,
+    `value` TEXT,
+    `form_id` TEXT,
+    PRIMARY KEY  (`id`)
   )";
-  if ($result = connection()->query("SHOW TABLES LIKE 'options'")) {
-    if ($result->num_rows == 1) {
-      return 1;
-    }
-  } else {
-    if(connection()->query($sql) === TRUE) return 1;
+    if(conn()->query($sql) === TRUE) return 1;
     else return 0;
-  }
 }
 create_options_table();
 
@@ -22,15 +17,19 @@ function add_option($option_name, $value, $form_id='')
 {
   if ($form_id=='') {
     $sql = "SELECT * FROM options WHERE option_name = '$option_name'";
-    $result = connection()->query($sql);
-    if($result->num_rows>0) return 0;
+    $result = conn()->query($sql);
+    if(@$result->num_rows>1) return 0;
+    if(@$result->num_rows == 1) {
+      save_option($option_name,$value);
+      return 1;
+    }
   } elseif ($form_id!='') {
     $sql = "SELECT * FROM options WHERE option_name = '$option_name' AND form_id = '$form_id'";
-    $result = connection()->query($sql);
+    $result = conn()->query($sql);
     if($result->num_rows>0) return 0;
   }
   $sql = "INSERT INTO options VALUES (NULL, '$option_name', '$value', '$form_id')";
-  if(connection()->query($sql) === TRUE) return 1;
+  if(conn()->query($sql) === TRUE) return 1;
   else return 0;
 }
 
@@ -41,7 +40,7 @@ function get_option($option_name, $form_id='')
   } else {
     $sql = "SELECT value FROM options WHERE option_name = '$option_name' AND form_id = '$form_id'";
   }
-  $result = connection()->query($sql);
+  $result = conn()->query($sql);
   if (@$result->num_rows>0) {
     $row = $result->fetch_assoc();
     return $row['value'];
@@ -54,7 +53,7 @@ function save_option($option_name, $value, $form_id='')
 {
   if ($form_id == '') {
     $sql = "SELECT * FROM options WHERE option_name = '$option_name'";
-    $result = connection()->query($sql);
+    $result = conn()->query($sql);
     if ($result->num_rows>1) {
       return 0;
     } else {
@@ -63,15 +62,15 @@ function save_option($option_name, $value, $form_id='')
         return 0;
       }
       $sql = "UPDATE options SET value = '$value' WHERE option_name = '$option_name'";
-      if(connection()->query($sql) === TRUE) return 1;
+      if(conn()->query($sql) === TRUE) return 1;
       else return 0;
     }
   } else {
     $sql = "SELECT value FROM options WHERE option_name = '$option_name' AND form_id = '$form_id'";
-    $result = connection()->query($sql);
+    $result = conn()->query($sql);
     if ($result->num_rows==1) {
       $sql = "UPDATE options SET value = '$value' WHERE option_name = '$option_name' AND form_id = '$form_id'";
-      if(connection()->query($sql) === TRUE) return 1;
+      if(conn()->query($sql) === TRUE) return 1;
       else return 0;
     } else {
       return 0;
@@ -88,7 +87,7 @@ function unset_option($option_name,$form_id='')
     $form_id = $form_id[0];
     $sql = "DELETE FROM options WHERE form_id LIKE '%$form_id%' AND option_name = '$option_name'";
   }
-  if (connection()->query($sql) === TRUE) {
+  if (conn()->query($sql) === TRUE) {
     return 1;
   } else {
     return 0;
@@ -100,7 +99,7 @@ function unset_options($form_id)
   if ($form_id != '') {
     $sql = "DELETE FROM options WHERE form_id = '$form_id'";
   }
-  if (connection()->query($sql) === TRUE) {
+  if (conn()->query($sql) === TRUE) {
     return 1;
   } else {
     return 0;
@@ -113,7 +112,7 @@ function get_form_field($form_id)
   $form_id = $form_id[0];
 
   $sql = "SELECT * FROM fields WHERE form_id = '$form_id'";
-  $result = connection()->query($sql);
+  $result = conn()->query($sql);
     if ($result->num_rows>0) {
       while ($row = $result->fetch_assoc()) {
         $fields[] = $row['name'];
